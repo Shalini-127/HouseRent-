@@ -1,0 +1,28 @@
+{% extends 'rental/base.html' %}
+
+{% load static %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h2>Register</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.non_field_errors }}  {# Display non-field errors if any #}
+
+    <label for="username">Username:</label>
+    {{ form.username }}  {# Use the form field directly #}
+    
+    <label for="email">Email:</label>
+    {{ form.email }}  {# Use the form field directly #}
+
+    <label for="password1">Password:</label>
+    {{ form.password1 }}  {# Use the form field directly #}
+
+    <label for="password2">Confirm Password:</label>
+    {{ form.password2 }}  {# Use the form field directly #}
+    
+    <button type="submit">Register</button>
+</form>
+<p>Already have an account? <a href="{% url 'login' %}">Login here</a>.</p>
+{% endblock %}

@@ -1,0 +1,384 @@
+{% extends 'rental/base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #001f3f; /* Dark blue background */
+            color: #ffffff; /* White text */
+            line-height: 1.5;
+        }
+
+        /* Main Banner */
+        .main-banner {
+            background: url('path/to/your/image.jpg') no-repeat center center/cover;
+            color: white;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .main-banner h2 {
+            font-size: 3.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .main-banner p {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .cta-button {
+            background-color: #007bff; /* Bright blue for button */
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .cta-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Search Section */
+        .search-section {
+            background-color: #003366; /* Darker shade for the search section */
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .search-section h3 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #ffffff;
+        }
+
+        .search-section form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-section input, .search-section select {
+            padding: 12px 15px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #004080; /* Dark blue border */
+            width: 200px;
+            background-color: #ffffff; /* White input background */
+            color: #001f3f; /* Dark blue text for inputs */
+        }
+
+        .search-section button {
+            background-color: #007bff; /* Bright blue for button */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-section button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        /* Latest Reviews Section */
+        .latest-reviews {
+            padding: 40px 20px;
+            background-color: #003366; /* Darker shade for reviews */
+            text-align: center;
+        }
+
+        .latest-reviews h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .reviews-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .review-card {
+            background: #0056b3; /* Dark blue for review cards */
+            width: 280px;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s;
+            text-align: left;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .review-title {
+            font-size: 1.4em;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .review-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #ffffff; /* White text for details */
+            font-size: 0.9em;
+        }
+
+        .review-rating {
+            background-color: #ffc107;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .review-date {
+            font-style: italic;
+        }
+
+        .review-comment {
+            font-size: 1em;
+            color: #ffffff; /* White text for comments */
+            line-height: 1.5;
+        }
+
+        .no-reviews {
+            font-size: 1.2em;
+            color: #ffffff; /* White text for no reviews */
+            padding: 20px;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 40px 20px;
+            background-color: #003366; /* Darker shade for FAQs */
+            text-align: center;
+        }
+
+        .faq-section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .faq-item {
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+            padding: 15px 0;
+        }
+
+        .faq-item:last-child {
+            border: none;
+        }
+
+        .faq-question {
+            cursor: pointer;
+            color: #007bff;
+            font-weight: bold;
+            margin: 10px 0;
+            transition: color 0.3s;
+        }
+
+        .faq-question:hover {
+            color: #0056b3;
+        }
+
+        .faq-answer {
+            display: none;
+            margin: 5px 0 15px;
+            font-size: 0.9em;
+            color: #ffffff; /* White text for answers */
+        }
+
+        /* Newsletter Section */
+        .newsletter-section {
+            background-color: #0056b3; /* Dark blue for newsletter */
+            padding: 30px;
+            text-align: center;
+            border-radius: 10px;
+            margin: 50px 20px;
+        }
+
+        .newsletter-section h3 {
+            margin-bottom: 20px;
+            font-size: 2em;
+            color: #ffffff;
+        }
+
+        .newsletter-section input {
+            padding: 12px 15px;
+            font-size: 1em;
+            border-radius: 8px;
+            border: 1px solid #004080; /* Dark blue border */
+            width: 250px;
+            background-color: #ffffff; /* White input background */
+            color: #001f3f; /* Dark blue text for inputs */
+        }
+
+        .newsletter-section button {
+            background-color: #007bff; /* Bright blue for button */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .newsletter-section button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+    </style>
+</head>
+<body>
+    <section class="main-banner">
+        <h2>Find Your Perfect Home</h2>
+        <p>Explore the best properties in your area.</p>
+        <a href="{% url 'property_list' %}" class="cta-button">Browse Now</a>
+    </section>
+    <div class="search-section" style="background-color: #003366; padding: 30px; text-align: center; border-radius: 10px; margin: 50px 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);">
+        <h3 style="margin-bottom: 20px; font-size: 2em; color: #ffffff;">Search for Properties</h3>
+        <form action="{% url 'property_search' %}" method="GET">
+            <input type="text" name="location" placeholder="Location" required style="padding: 12px 15px; font-size: 1em; border-radius: 8px; border: 1px solid #004080; width: 250px; background-color: #ffffff; color: #001f3f;">
+            <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; transition: background-color 0.3s;">Search</button>
+        </form>
+    </div>
+    <section class="latest-reviews">
+        <h2>Latest Reviews</h2>
+        <div class="reviews-container">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="review-card">
+                        <div class="review-title">{{ review.title }}</div>
+                        <div class="review-details">
+                            <span class="review-rating">{{ review.rating }}</span>
+                            <span class="review-date">{{ review.date }}</span>
+                        </div>
+                        <p class="review-comment">{{ review.comment }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-reviews">No reviews available yet.</div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <h2>Frequently Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-question">
+                What types of properties are available?
+            </div>
+            <div class="faq-answer">
+                We have apartments, houses, and PG accommodations.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                How can I book a property?
+            </div>
+            <div class="faq-answer">
+                You can book a property through our website or contact us directly.
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                What is the cancellation policy?
+            </div>
+            <div class="faq-answer">
+                You can cancel your booking up to 24 hours before the check-in time.
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Select all question elements
+        const questions = document.querySelectorAll('.faq-question');
+    
+        // Add click event listener to each question
+        questions.forEach(question => {
+            question.addEventListener('click', () => {
+                // Toggle the display of the corresponding answer
+                const answer = question.nextElementSibling; // Get the next sibling element (the answer)
+                const isDisplayed = answer.style.display === 'block';
+                answer.style.display = isDisplayed ? 'none' : 'block'; // Toggle display
+            });
+        });
+    </script>
+    
+
+    <section class="newsletter-section" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #003366; color: #ffffff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); text-align: center;">
+        <h3>Subscribe to our Newsletter</h3>
+        <form id="newsletter-form" onsubmit="return subscribeNewsletter(event);" style="display: flex; flex-direction: column; align-items: center;">
+            <input type="email" id="email-input" placeholder="Your email address" required style="padding: 12px; border: none; border-radius: 5px; margin-bottom: 10px; width: 80%; max-width: 300px;">
+            <button type="submit" style="background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; transition: background-color 0.3s;">Subscribe</button>
+        </form>
+        <p id="message" style="margin-top: 10px; display: none; color: #ffcc00;"></p> <!-- Placeholder for success or error messages -->
+    </section>
+    <script>
+        function subscribeNewsletter(event) {
+            event.preventDefault(); // Prevent form submission
+        
+            const emailInput = document.getElementById('email-input');
+            const message = document.getElementById('message');
+        
+            // Simple email validation (more complex validation can be added)
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(emailInput.value)) {
+                message.textContent = "Please enter a valid email address.";
+                message.style.color = "red"; // Error color
+                message.style.display = "block"; // Show message
+                return false; // Prevent further action
+            }
+        
+            // Simulate a successful subscription
+            message.textContent = "Thank you for subscribing! You will receive our updates.";
+            message.style.color = "green"; // Success color
+            message.style.display = "block"; // Show message
+        
+            // Clear the input
+            emailInput.value = '';
+        
+            // Optionally: Send the email to the server (not included in this example)
+            // This can be done using an AJAX call or fetch API
+            return false; // Prevent further action
+        }
+        </script>
+        
+
+</body>
+</html>
+{% endblock %}

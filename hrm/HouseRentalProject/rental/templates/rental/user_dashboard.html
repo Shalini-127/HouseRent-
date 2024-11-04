@@ -1,0 +1,260 @@
+{% extends 'rental/base.html' %}
+{% load custom_filters %}
+{% block title %}User Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+
+    <!-- Display Messages -->
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2 class="dashboard-title">User Dashboard</h2>
+
+    <!-- Properties Section -->
+    <section class="properties-section">
+        <h3 class="section-title">Your Properties</h3>
+        <div class="properties-grid">
+            {% for property in properties %}
+                <div class="property-card">
+                    <img src="{{ property.image.url }}" alt="{{ property.title }}" class="property-image"> <!-- Assuming you have an image field -->
+                    <h4 class="property-title">{{ property.title }}</h4>
+                    <p class="property-description">{{ property.description|truncatewords:20 }}</p> <!-- Display a short description -->
+                    <div class="property-actions">
+                        <a href="{% url 'edit_property' property.id %}" class="btn-edit">Edit</a> <!-- Link to edit property -->
+                        <a href="{% url 'delete_property' property.id %}" class="btn-delete" onclick="return confirm('Are you sure you want to delete this property?');">Delete</a> <!-- Link to delete property -->
+                    </div>
+                </div>
+            {% empty %}
+                <p class="no-properties">No properties found.</p>
+            {% endfor %}
+        </div>
+    </section>
+    
+<!-- Bookings Section -->
+<section class="bookings-section">
+    <h3 class="section-title">Your Bookings</h3>
+    {% if bookings %}
+    <ul>
+        {% for booking in bookings %}
+            <li>
+                <span class="property-title">{{ booking.property.title }}</span> - 
+                Status: {{ booking.status }}
+                <span class="booking-dates">{{ booking.start_date }} to {{ booking.end_date }}</span>
+                
+                <!-- Review Section -->
+                {% if booking.id in review_status %}
+                    {% with user_reviews|get_item:booking.property.id as user_review %}
+                        {% if user_review %}
+                            <p class="review-text">
+                                <strong>Your Review:</strong> {{ user_review.comment }} (Rating: {{ user_review.rating }})
+                            </p>
+                        {% else %}
+                            <p class="review-text">
+                                <strong>You have not reviewed this property yet.</strong>
+                            </p>
+                        {% endif %}
+                    {% endwith %}
+                {% else %}
+                    <form method="POST" class="review-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="booking_id" value="{{ booking.id }}">
+                        <div class="form-group">
+                            <label for="rating">Rating:</label>
+                            {{ review_form.rating|attr:'class:rating-input' }}
+                        </div>
+                        <div class="form-group">
+                            <label for="comment">Comment:</label>
+                            {{ review_form.comment|attr:'class:comment-input' }}
+                        </div>
+                        {% if review_form.errors %}
+                            <div class="error-message">
+                                {% for field in review_form %}
+                                    {% for error in field.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for error in review_form.non_field_errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <button type="submit" class="submit-button">Submit Review</button>
+                    </form>
+                {% endif %}
+
+                <!-- Cancellation Section -->
+                <form method="POST" action="{% url 'cancel_booking' booking.id %}" class="cancel-form">
+                    {% csrf_token %}
+                    <button type="submit" class="cancel-button">Cancel Booking</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p class="no-bookings">No bookings found.</p>
+    {% endif %}
+</section>
+
+    <!-- Property Requests Section -->
+    <section class="property-requests-section">
+        <h3 class="section-title">Your Property Requests</h3>
+        <ul>
+            {% for request in property_requests %}
+                <li>{{ request.property.title }} - {{ request.status }}</li>
+            {% empty %}
+                <li>No property requests found.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+</div>
+
+<!-- CSS Styling -->
+<style>
+    .dashboard-container {
+        max-width: 900px;
+        margin: 40px auto;
+        font-family: Arial, sans-serif;
+        color: #333;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+    }
+
+    .dashboard-title {
+        font-size: 30px;
+        text-align: center;
+        margin-bottom: 30px;
+        color: #2c3e50;
+        font-weight: bold;
+    }
+
+    .section-title {
+        font-size: 24px;
+        color: #34495e;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 10px;
+    }
+
+    .properties-grid,
+    .bookings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .property-card,
+    .booking-card {
+        padding: 15px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s;
+    }
+
+    .property-card:hover,
+    .booking-card:hover {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .property-title {
+        font-weight: bold;
+        color: #2980b9;
+        font-size: 18px;
+    }
+
+    .booking-dates {
+        color: #555;
+        font-size: 14px;
+    }
+
+    .review-text {
+        color: #2c3e50;
+        font-size: 16px;
+        margin-top: 10px;
+    }
+
+    .review-form {
+        margin-top: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .submit-button {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .submit-button:hover {
+        background-color: #2980b9;
+    }
+
+    .cancel-form {
+        margin-top: 15px; /* Add spacing above the cancel button */
+    }
+
+    .cancel-button {
+        background-color: #e74c3c; /* Red color for cancel button */
+        color: #fff;
+        padding: 10px 15px;
+        border: none;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .cancel-button:hover {
+        background-color: #c0392b; /* Darker red on hover */
+    }
+
+    .error-message {
+        color: red;
+        margin-top: 10px;
+    }
+
+    .no-properties, .no-bookings, .no-requests {
+        text-align: center;
+        font-style: italic;
+        color: #7f8c8d;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .messages li {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+
+    .messages .success {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .messages .error {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
+{% endblock %}

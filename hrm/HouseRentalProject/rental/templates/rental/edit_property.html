@@ -1,0 +1,46 @@
+{% extends 'rental/base.html' %}
+
+{% block title %}Edit Property{% endblock %}
+
+{% block content %}
+    <h2>Edit Property</h2>
+    
+    <!-- Success/Error Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    
+    <form method="POST">
+        {% csrf_token %}
+        
+        <!-- Django form fields for the PropertyForm instance -->
+        <div>
+            <label for="property_name">Property Name:</label>
+            {{ form.property_name }}
+        </div>
+        
+        <div>
+            <label for="location">Location:</label>
+            {{ form.location }}
+        </div>
+        
+        <div>
+            <label for="price">Price:</label>
+            {{ form.price }}
+        </div>
+        
+        <div>
+            <label for="description">Description:</label>
+            {{ form.description }}
+        </div>
+        
+        <div>
+            <label for="image">Property Image URL:</label>
+            {{ form.image }}
+        </div>
+
+        <button type="submit">Save Changes</button>
+    </form>
+{% endblock %}

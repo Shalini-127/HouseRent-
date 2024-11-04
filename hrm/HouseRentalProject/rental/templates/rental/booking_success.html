@@ -1,0 +1,9 @@
+{% extends 'rental/base.html' %}
+
+{% block title %}Booking Successful{% endblock %}
+
+{% block content %}
+<h2>Thank You for Your Booking!</h2>
+<p>Your payment has been processed successfully. You will receive a confirmation email shortly.</p>
+<a href="{% url 'property_list' %}">Back to Property List</a>
+{% endblock %}

@@ -1,0 +1,245 @@
+{% extends 'rental/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<style>
+    /* General layout styling */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        color: #333;
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    h3 {
+        color: #34495e;
+        font-size: 1.8rem;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #2c3e50;
+        padding-bottom: 0.3rem;
+    }
+
+    /* Statistics Section Styling */
+    .statistics {
+        background-color: #eaf2f8;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 2rem;
+    }
+
+    .statistics ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: space-around;
+    }
+
+    .statistics li {
+        font-size: 1.2rem;
+        color: #2c3e50;
+        background-color: #d1e7dd;
+        padding: 0.8rem 1.2rem;
+        border-radius: 6px;
+        text-align: center;
+        min-width: 150px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: transform 0.3s;
+    }
+
+    .statistics li:hover {
+        transform: scale(1.05);
+    }
+
+    .statistics i {
+        font-size: 1.4rem;
+        color: #3498db;
+    }
+
+    /* Table styling for User Last Login Times */
+    .login-table {
+        width: 100%;
+        max-width: 800px;
+        margin: auto;
+        border-collapse: collapse;
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .login-table th, .login-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .login-table th {
+        background-color: #34495e;
+        color: #ffffff;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .login-table td {
+        color: #34495e;
+    }
+
+    .login-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Manage Properties Section */
+    .manage-properties {
+        margin-top: 2rem;
+        text-align: center;
+    }
+
+    .add-property-btn {
+        display: inline-block;
+        margin: 1rem 0;
+        padding: 0.8rem 1.5rem;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    .add-property-btn:hover {
+        background-color: #2980b9;
+    }
+
+    .properties-list {
+        list-style-type: none;
+        padding: 0;
+        max-width: 600px;
+        margin: auto;
+    }
+
+    .properties-list li {
+        font-size: 1rem;
+        color: #2c3e50;
+        margin: 0.5rem 0;
+        padding: 0.5rem 1rem;
+        background-color: #eef5fb;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
+
+    .properties-list li:hover {
+        background-color: #d5e6f2;
+    }
+
+    .properties-list a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 0 0.5rem;
+    }
+
+    .properties-list a:hover {
+        color: #2980b9;
+    }
+</style>
+
+<!-- Statistics Section -->
+<div class="statistics">
+    <h3><i class="fas fa-chart-line"></i> Statistics</h3>
+    <ul>
+        <li><i class="fas fa-home"></i> Total Properties: {{ total_properties }}</li>
+        <li><i class="fas fa-calendar-check"></i> Total Bookings: {{ total_bookings }}</li>
+        <li><i class="fas fa-users"></i> Total Users: {{ total_users }}</li>
+        <li><i class="fas fa-calendar-times"></i> Total Canceled Bookings: {{ canceled_bookings }}</li>
+    </ul>
+</div>
+
+<!-- User Last Login Times Section -->
+<h3><i class="fas fa-user-clock"></i> User Last Login Times</h3>
+<table class="login-table">
+    <tr>
+        <th>Username</th>
+        <th>Last Login</th>
+    </tr>
+    {% for user in users_last_login %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.last_login }}</td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="2">No users found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- Booked Properties Section -->
+<h3><i class="fas fa-calendar-check"></i> Booked Properties</h3>
+<table>
+    <tr>
+        <th>User</th>
+        <th>Property</th>
+        <th>Booking Date</th>
+        <th>Property Image</th>
+        <th>Property Details</th>
+    </tr>
+    {% for booking in user_bookings %}
+        <tr>
+            <td>{{ booking.user__username }}</td>
+            <td>{{ booking.property__title }}</td>
+            <td>{{ booking.start_date }}</td>
+            <td>
+                {% if booking.property.image %}
+                    <img src="{{ booking.property.image.url }}" alt="{{ booking.property.title }}" style="width: 100px; height: auto;">
+                {% else %}
+                    No image available
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url 'property_detail' booking.property.id %}"></a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">No bookings available.</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+<!-- Manage Properties Section -->
+<div class="manage-properties">
+    <h3><i class="fas fa-building"></i> Manage Properties</h3>
+    <a href="{% url 'add_property' %}" class="add-property-btn"><i class="fas fa-plus"></i> Add New Property</a>
+    <ul class="properties-list">
+        {% for property in properties %}
+            <li>{{ property.title }}
+                <span>
+                    <a href="{% url 'edit_property' property.id %}"><i class="fas fa-edit"></i> Edit</a> | 
+                    <a href="{% url 'delete_property' property.id %}"><i class="fas fa-trash-alt"></i> Delete</a>
+                </span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

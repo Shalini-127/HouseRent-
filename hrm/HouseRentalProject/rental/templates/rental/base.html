@@ -1,0 +1,133 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}House Rental Management System{% endblock %}</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Internal CSS -->
+    <style>
+        /* Reset default styling */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* General body styling */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        /* Header and Navbar styling */
+        header {
+            background-color: #34495e;
+            padding: 10px 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a, 
+        nav ul li button {
+            color: #ecf0f1;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        nav ul li a:hover, 
+        nav ul li button:hover {
+            background-color: #e67e22;
+            color: white;
+        }
+
+        /* Button styling for Logout */
+        nav ul li form button {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        /* Mobile responsive styling */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            nav ul li {
+                margin: 10px 0;
+            }
+        }
+        
+        /* Footer styling */
+        footer {
+            text-align: center;
+            padding: 10px 0;
+            background-color: #34495e;
+            color: #ecf0f1;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'property_list' %}">Properties</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin_dashboard' %}">Admin Dashboard</a></li>
+                    {% else %}
+                        <li><a href="{% url 'user_dashboard' %}">User Dashboard</a></li>
+                    {% endif %}
+
+                    <!-- Logout button with POST request -->
+                    <li>
+                        <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">
+                                Logout
+                            </button>
+                        </form>
+                    </li>
+                
+                {% else %}
+                    <!-- User Login and Admin Login Links -->
+                    <li><a href="{% url 'login' %}">User Login</a></li>
+                    <li><a href="{% url 'admin_login' %}">Admin Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>&copy; 2024 House Rental Management System</p>
+    </footer>
+</body>
+</html>

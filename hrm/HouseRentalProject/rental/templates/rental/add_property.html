@@ -1,0 +1,61 @@
+{% extends 'rental/base.html' %}
+
+{% block title %}Add Property{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center; color: #34495e; margin-top: 20px;">Add New Property</h2>
+<form method="POST" enctype="multipart/form-data" style="max-width: 600px; margin: 20px auto; padding: 20px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    {% csrf_token %}
+    {{ form.media }}
+
+    <label for="title" style="display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; color: #34495e;">
+        <i class="fas fa-home" style="margin-right: 8px; color: #e67e22;"></i> Title:
+    </label>
+    <input type="text" name="title" id="id_title" placeholder="Enter property title" required style="width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+
+    <label for="description" style="display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; color: #34495e;">
+        <i class="fas fa-info-circle" style="margin-right: 8px; color: #e67e22;"></i> Description:
+    </label>
+    <textarea name="description" id="id_description" placeholder="Enter property description" required style="width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+    
+    <label for="location" style="display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; color: #34495e;">
+        <i class="fas fa-map-marker-alt" style="margin-right: 8px; color: #e67e22;"></i> Location:
+    </label>
+    <input type="text" name="location" id="id_location" placeholder="Enter location (e.g., New York)" required style="width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+
+    <label for="price" style="display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; color: #34495e;">
+        <i class="fas fa-dollar-sign" style="margin-right: 8px; color: #e67e22;"></i> Price:
+    </label>
+    <input type="number" name="price" id="id_price" placeholder="Enter price in USD" required style="width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+
+
+    <!-- New Image Upload Field -->
+    <label for="image" style="display: flex; align-items: center; font-weight: bold; margin-bottom: 8px; color: #34495e;">
+        <i class="fas fa-image" style="margin-right: 8px; color: #e67e22;"></i> Property Image:
+    </label>
+    <input type="file" name="image" id="id_image" accept="image/*" required style="width: 100%; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+    
+    <!-- Image Preview -->
+    <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 100%; height: auto; margin-top: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    
+    <button type="submit" style="width: 100%; padding: 12px; background-color: #34495e; color: #fff; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+        <i class="fas fa-plus-circle" style="margin-right: 8px;"></i> Add Property
+    </button>
+</form>
+
+<script>
+    // JavaScript function to display live image preview
+    document.getElementById("id_image").addEventListener("change", function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById("imagePreview");
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}
